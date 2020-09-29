@@ -1,0 +1,28 @@
+{
+  "manifest_version": 2,
+  "name": "YouTube Repeat",
+  "short_name": "YouTube Loop",
+  "description": "Repeat YouTube",
+  "icons": {
+    "16": "16.png",
+    "32": "32.png",
+    "48": "48.png",
+    "96": "96.png",
+    "128": "128.png"
+  },
+  "version": "1.1.4",
+  "version_name": "1.1.beta",
+  "author": "Danilov Roman <iotweblab@gmail.com>",
+  "browser_action": {
+    "default_icon": "32.png",
+    "default_title": "YouTube Repeat"
+  },
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "https://youtube.com/*"
+  ],
+    "background" : {
+    "scripts" : ["src.js"]
+  }
+}
