@@ -11,7 +11,7 @@
     "128": "128.png"
   },
   "version": "1.1.4",
-  "version_name": "1.1.beta",
+  "version_name": "1.2.beta",
   "author": "Danilov Roman <iotweblab@gmail.com>",
   "browser_action": {
     "default_icon": "32.png",
@@ -20,7 +20,7 @@
   "permissions": [
     "activeTab",
     "tabs",
-    "https://youtube.com/*"
+    "https://www.youtube.com/*"
   ],
     "background" : {
     "scripts" : ["src.js"]
