@@ -23,13 +23,20 @@
 **/
 
 "use strict";
-const YOUTUBE = "https://www.youtube.com/";
-let start = true;
+const YOUTUBE = "https://www.youtube.com/watch?v=";
+let start = false;
 
 chrome.tabs.onUpdated.addListener(
-	function (tabId, changeInfo, tab) {
-		if (changeInfo.url) {
+	function (tabId, info, tab) {
+		if (info.url) {
 			useListener(tabId);
+		}
+
+		if (tab.url.includes(YOUTUBE)) {
+			console.log("exe before");
+			chrome.tabs.executeScript(tabId, {
+				file: "youtube.js"
+			})
 		}
 	}
 );
@@ -40,17 +47,15 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 
 chrome.browserAction.onClicked.addListener(function (tabs) {
 	chrome.tabs.query({ 'active': true, 'lastFocusedWindow': true }, function (tabs) {
-		start ?
-			chrome.tabs.executeScript(tabs[0].id, { file: "youtube.js" }, messaging(tabs)) :
-			messaging(tabs);
+		console.log("TABS ", tabs)
+		if (tabs[0].url.includes(YOUTUBE)) {
+			chrome.tabs.sendMessage(tabs[0].id, { action: start = !start });
+			setStatus(start);
+		}
 	});
 });
 
-function messaging(tabs) {
-	chrome.tabs.sendMessage(tabs[0].id, { action: start = !start });
-}
-
-function getStatus(status) {
+function setStatus(status) {
 	chrome.browserAction.setBadgeText({ text: status ? "on" : "off" }, null);
 	chrome.browserAction.setBadgeBackgroundColor({ color: status ? [0, 180, 0, 100] : [180, 0, 0, 100] }, null);
 }
@@ -58,7 +63,7 @@ function getStatus(status) {
 function useListener(tabId) {
 	chrome.tabs.get(tabId, function (tab) {
 		tab.url.includes(YOUTUBE) ?
-			chrome.browserAction.enable(tab.id, getStatus(true)) :
-			chrome.browserAction.disable(tab.id, getStatus(false));
+			chrome.browserAction.enable(tab.id) :
+			chrome.browserAction.disable(tab.id, setStatus(false));
 	});
 }
