@@ -63,6 +63,6 @@ function useListener(tabId) {
 	chrome.tabs.get(tabId, function (tab) {
 		tab.url.includes(YOUTUBE) ?
 			chrome.browserAction.enable(tab.id) :
-			chrome.browserAction.disable(tab.id, setStatus(false));
+			chrome.browserAction.disable(tab.id);
 	});
 }
