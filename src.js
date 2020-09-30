@@ -47,7 +47,6 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 
 chrome.browserAction.onClicked.addListener(function (tabs) {
 	chrome.tabs.query({ 'active': true, 'lastFocusedWindow': true }, function (tabs) {
-		console.log("TABS ", tabs)
 		if (tabs[0].url.includes(YOUTUBE)) {
 			chrome.tabs.sendMessage(tabs[0].id, { action: start = !start });
 			setStatus(start);
