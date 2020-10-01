@@ -26,13 +26,25 @@
 const YOUTUBE = "https://www.youtube.com/watch?v=";
 let start = false;
 
+chrome.contextMenus.create({
+	id: 'YouTube_Repeat',
+	title: 'YouTube Repeat',
+	contexts: ['all']
+});
+
+chrome.contextMenus.onClicked.addListener((info, tabs) => {
+	if (info.menuItemId === 'YouTube_Repeat' && info.linkUrl.includes(YOUTUBE)) {
+		messaging(tabs, info);
+	}
+});
+
 chrome.tabs.onUpdated.addListener(
 	function (tabId, info, tab) {
-		if (info.url) {
-			useListener(tabId);
-		}
+		// if (info.url) {
+		// 	useListener(tabId);
+		// }
 
-		if (tab.url.includes(YOUTUBE)) {
+		if (tab.url.includes("https://www.youtube.com")) {
 			console.log("exe before");
 			chrome.tabs.executeScript(tabId, {
 				file: "youtube.js"
@@ -41,18 +53,30 @@ chrome.tabs.onUpdated.addListener(
 	}
 );
 
-chrome.tabs.onActivated.addListener(function (activeInfo) {
-	useListener(activeInfo.tabId);
-});
+// chrome.tabs.onActivated.addListener(function (activeInfo) {
+// 	useListener(activeInfo.tabId);
+// });
 
 chrome.browserAction.onClicked.addListener(function (tabs) {
-	chrome.tabs.query({ 'active': true, 'lastFocusedWindow': true }, function (tabs) {
+	callYouTube(tabs);
+});
+
+function callYouTube(data) {
+	chrome.tabs.query({ 'active': true, 'lastFocusedWindow': true }, function (tabs, info) {
 		if (tabs[0].url.includes(YOUTUBE)) {
-			chrome.tabs.sendMessage(tabs[0].id, { action: start = !start });
-			setStatus(start);
+			messaging(tabs, info);
+		} else {
+			window.open(YOUTUBE, '_blank');
 		}
 	});
-});
+}
+
+function messaging(tabs, info) {
+	let tabId = (tabs[0] && tabs[0].id) || tabs.id;
+	let linkURL = info && info.linkUrl
+	chrome.tabs.sendMessage(tabId, { action: start = !start, linkURL: linkURL});
+	setStatus(start);
+}
 
 function setStatus(status) {
 	chrome.browserAction.setBadgeText({ text: status ? "on" : "off" }, null);
