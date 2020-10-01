@@ -38,8 +38,7 @@ let frame = document.getElementById("youTubeRepead");
 })()
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-
-  let trackSearch = window.location.search
+  let trackSearch = message.linkURL ? message.linkURL : window.location.search
   let isMix = trackSearch.indexOf("&");
   let trackId = trackSearch.substring(
     trackSearch.indexOf("v=") + 2,
