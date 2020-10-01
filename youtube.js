@@ -43,7 +43,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   let isMix = trackSearch.indexOf("&");
   let trackId = trackSearch.substring(
     trackSearch.indexOf("v=") + 2,
-    isMix != -1 ? isMix : track.length
+    isMix != -1 ? isMix : trackSearch.length
   );
 
   frame.src = message.action ? `https://www.youtube.com/embed/${trackId}?&autoplay=1&loop=1&rel=0&showinfo=0&color=white&iv_load_policy=3&playlist=${trackId}` : "";
