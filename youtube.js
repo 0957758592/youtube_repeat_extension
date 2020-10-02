@@ -25,25 +25,27 @@
 "use strict";
  
 console.log(" YouTubeRepead STARTED ")
-var frame = document.getElementById("youTubeRepead");
+var frame = document.getElementById("YouTubeRepeat");
   
-(function start() {
+function start() {
 
   if (!frame) {
     frame = document.createElement('iframe');
-    frame.id = "youTubeRepead"
+    frame.id = "YouTubeRepeat"
     frame.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
     document.body.appendChild(frame);
   }
-})()
+}
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+  start();
   let trackSearch = message.linkURL ? message.linkURL : window.location.search
   let isMix = trackSearch.indexOf("&");
   let trackId = trackSearch.substring(
     trackSearch.indexOf("v=") + 2,
     isMix != -1 ? isMix : trackSearch.length
   );
+  console.log('trackId ==> ', trackId);
 
   frame.src = message.action ? `https://www.youtube.com/embed/${trackId}?&autoplay=1&loop=1&rel=0&showinfo=0&color=white&iv_load_policy=3&playlist=${trackId}` : "";
 });

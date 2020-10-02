@@ -76,7 +76,7 @@ function callYouTube(tabs, isBrowserAction = false) {
 function messaging(tabs, info, isBrowserAction) {
 	let tabId = (tabs[0] && tabs[0].id) || tabs.id;
 	let linkURL = info && info.linkUrl || tabs[0] && tabs[0].url
-	console.log("linkURL ", linkURL);
+
 	!isBrowserAction ? isLinkExist(linkURL) : null;
 	chrome.tabs.sendMessage(tabId, { action: start = !start, linkURL: linkURL });
 	setStatus(start, linkURL);
