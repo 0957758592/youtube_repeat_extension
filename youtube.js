@@ -25,7 +25,7 @@
 "use strict";
  
 console.log(" YouTubeRepead STARTED ")
-let frame = document.getElementById("youTubeRepead");
+var frame = document.getElementById("youTubeRepead");
   
 (function start() {
 
