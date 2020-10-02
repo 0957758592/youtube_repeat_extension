@@ -64,9 +64,9 @@ chrome.browserAction.onClicked.addListener(function (tabs) {
 
 function callYouTube(tabs, isBrowserAction = false) {
 	chrome.tabs.query({ 'active': true, 'lastFocusedWindow': true }, function (tabs, info) {
-		if (tabs[0].url.includes(YOUTUBE)) {
+		if (tabs[0].url.startsWith(YOUTUBE_TRACK) || (tabs[0].url.match(/https\:\/\/www\.youtube\.com/) && start)) {
 			messaging(tabs, info, isBrowserAction);
-		}
+		} 
 		if (!tabs[0].url.match(/https\:\/\/www\.youtube\.com/)) {
 			window.open(YOUTUBE, '_blank');
 		}
