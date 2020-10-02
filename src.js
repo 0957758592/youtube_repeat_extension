@@ -23,7 +23,8 @@
 **/
 
 "use strict";
-const YOUTUBE = "https://www.youtube.com/watch?v=";
+const YOUTUBE_TRACK = "https://www.youtube.com/watch?v=";
+const YOUTUBE = "https://www.youtube.com/";
 let start = false;
 
 chrome.contextMenus.create({
@@ -33,8 +34,8 @@ chrome.contextMenus.create({
 });
 
 chrome.contextMenus.onClicked.addListener((info, tabs) => {
-	if (info.menuItemId === 'YouTube_Repeat' && info.linkUrl.includes(YOUTUBE)) {
-		messaging(tabs, info);
+	if (info.menuItemId === 'YouTube_Repeat' && info.linkUrl.includes(YOUTUBE_TRACK)) {
+		messaging(tabs, info, false);
 	}
 });
 
@@ -44,8 +45,7 @@ chrome.tabs.onUpdated.addListener(
 		// 	useListener(tabId);
 		// }
 
-		if (tab.url.includes("https://www.youtube.com")) {
-			console.log("exe before");
+		if (tab.url.includes(YOUTUBE)) {
 			chrome.tabs.executeScript(tabId, {
 				file: "youtube.js"
 			})
@@ -58,34 +58,44 @@ chrome.tabs.onUpdated.addListener(
 // });
 
 chrome.browserAction.onClicked.addListener(function (tabs) {
-	callYouTube(tabs);
+	callYouTube(tabs, true);
 });
 
-function callYouTube(data) {
+function callYouTube(tabs, isBrowserAction = false) {
 	chrome.tabs.query({ 'active': true, 'lastFocusedWindow': true }, function (tabs, info) {
 		if (tabs[0].url.includes(YOUTUBE)) {
-			messaging(tabs, info);
-		} else {
+			messaging(tabs, info, isBrowserAction);
+		} if (!tabs[0].url.match(/https\:\/\/www\.youtube\.com/)) {
 			window.open(YOUTUBE, '_blank');
 		}
 	});
 }
 
-function messaging(tabs, info) {
+function messaging(tabs, info, isBrowserAction) {
 	let tabId = (tabs[0] && tabs[0].id) || tabs.id;
-	let linkURL = info && info.linkUrl
-	chrome.tabs.sendMessage(tabId, { action: start = !start, linkURL: linkURL});
-	setStatus(start);
+	let linkURL = info && info.linkUrl || tabs[0] && tabs[0].url
+	!isBrowserAction ? isLinkExist(linkURL) : null;
+	chrome.tabs.sendMessage(tabId, { action: start = !start, linkURL: linkURL });
+	setStatus(start, linkURL);
 }
 
-function setStatus(status) {
+function isLinkExist(linkURL) {
+	let isLink = localStorage.getItem("_linkURL");
+	if (isLink && (isLink != linkURL)) {
+		start = !start;
+	}
+	localStorage.setItem("_linkURL", linkURL);
+}
+
+function setStatus(status, linkURL) {
 	chrome.browserAction.setBadgeText({ text: status ? "on" : "off" }, null);
 	chrome.browserAction.setBadgeBackgroundColor({ color: status ? [0, 180, 0, 100] : [180, 0, 0, 100] }, null);
+	!status ? localStorage.removeItem("_linkURL", linkURL) : null;
 }
 
 function useListener(tabId) {
 	chrome.tabs.get(tabId, function (tab) {
-		tab.url.includes(YOUTUBE) ?
+		tab.url.includes(YOUTUBE_TRACK) ?
 			chrome.browserAction.enable(tab.id) :
 			chrome.browserAction.disable(tab.id);
 	});
