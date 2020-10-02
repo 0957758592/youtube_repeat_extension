@@ -45,7 +45,8 @@ chrome.tabs.onUpdated.addListener(
 		// 	useListener(tabId);
 		// }
 
-		if (tab.url.includes(YOUTUBE)) {
+		if (tab.url.includes(YOUTUBE) && info.status == "complete") {
+			console.log("before exec")
 			chrome.tabs.executeScript(tabId, {
 				file: "youtube.js"
 			})
@@ -65,7 +66,8 @@ function callYouTube(tabs, isBrowserAction = false) {
 	chrome.tabs.query({ 'active': true, 'lastFocusedWindow': true }, function (tabs, info) {
 		if (tabs[0].url.includes(YOUTUBE)) {
 			messaging(tabs, info, isBrowserAction);
-		} if (!tabs[0].url.match(/https\:\/\/www\.youtube\.com/)) {
+		}
+		if (!tabs[0].url.match(/https\:\/\/www\.youtube\.com/)) {
 			window.open(YOUTUBE, '_blank');
 		}
 	});
@@ -74,6 +76,7 @@ function callYouTube(tabs, isBrowserAction = false) {
 function messaging(tabs, info, isBrowserAction) {
 	let tabId = (tabs[0] && tabs[0].id) || tabs.id;
 	let linkURL = info && info.linkUrl || tabs[0] && tabs[0].url
+	console.log("linkURL ", linkURL);
 	!isBrowserAction ? isLinkExist(linkURL) : null;
 	chrome.tabs.sendMessage(tabId, { action: start = !start, linkURL: linkURL });
 	setStatus(start, linkURL);
@@ -93,10 +96,10 @@ function setStatus(status, linkURL) {
 	!status ? localStorage.removeItem("_linkURL", linkURL) : null;
 }
 
-function useListener(tabId) {
-	chrome.tabs.get(tabId, function (tab) {
-		tab.url.includes(YOUTUBE_TRACK) ?
-			chrome.browserAction.enable(tab.id) :
-			chrome.browserAction.disable(tab.id);
-	});
-}
+// function useListener(tabId) {
+// 	chrome.tabs.get(tabId, function (tab) {
+// 		tab.url.includes(YOUTUBE_TRACK) ?
+// 			chrome.browserAction.enable(tab.id) :
+// 			chrome.browserAction.disable(tab.id);
+// 	});
+// }
