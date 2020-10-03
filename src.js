@@ -27,6 +27,12 @@ const YOUTUBE_TRACK = "https://www.youtube.com/watch?v=";
 const YOUTUBE = "https://www.youtube.com/";
 let start = false;
 
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+	if (request.action === 'page_reload') {
+		setStatus(start = !start);
+	}
+});
+
 chrome.contextMenus.create({
 	id: 'YouTube_Repeat',
 	title: 'YouTube Repeat',
@@ -44,6 +50,8 @@ chrome.tabs.onUpdated.addListener(
 		// if (info.url) {
 		// 	useListener(tabId);
 		// }
+
+		console.log("STATUS ", info.status)
 
 		if (tab.url.includes(YOUTUBE) && info.status == "complete") {
 			console.log("before exec")
@@ -79,7 +87,7 @@ function messaging(tabs, info, isBrowserAction) {
 
 	!isBrowserAction ? isLinkExist(linkURL) : null;
 	chrome.tabs.sendMessage(tabId, { action: start = !start, linkURL: linkURL });
-	setStatus(start, linkURL);
+	setStatus(start);
 }
 
 function isLinkExist(linkURL) {
@@ -90,10 +98,10 @@ function isLinkExist(linkURL) {
 	localStorage.setItem("_linkURL", linkURL);
 }
 
-function setStatus(status, linkURL) {
+function setStatus(status) {
 	chrome.browserAction.setBadgeText({ text: status ? "on" : "off" }, null);
 	chrome.browserAction.setBadgeBackgroundColor({ color: status ? [0, 180, 0, 100] : [180, 0, 0, 100] }, null);
-	!status ? localStorage.removeItem("_linkURL", linkURL) : null;
+	!status ? localStorage.removeItem("_linkURL") : null;
 }
 
 // function useListener(tabId) {
