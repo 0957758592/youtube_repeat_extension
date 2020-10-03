@@ -51,8 +51,6 @@ chrome.tabs.onUpdated.addListener(
 		// 	useListener(tabId);
 		// }
 
-		console.log("STATUS ", info.status)
-
 		if (tab.url.includes(YOUTUBE) && info.status == "complete") {
 			console.log("before exec")
 			chrome.tabs.executeScript(tabId, {
