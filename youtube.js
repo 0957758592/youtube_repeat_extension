@@ -25,6 +25,10 @@
 "use strict";
  
 console.log(" YouTubeRepead STARTED ")
+
+window.onbeforeunload = function (event) {
+  chrome.runtime.sendMessage({ action: "page_reload", event: event })
+}
   
 function start() {
   let frame = document.getElementById("YouTubeRepeat");
