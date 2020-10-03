@@ -29,6 +29,7 @@ let start = false;
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 	if (request.action === 'page_reload') {
+		console.log("page reloaded")
 		setStatus(start = !start);
 	}
 });
@@ -83,7 +84,7 @@ function messaging(tabs, info, isBrowserAction) {
 	let tabId = (tabs[0] && tabs[0].id) || tabs.id;
 	let linkURL = info && info.linkUrl || tabs[0] && tabs[0].url
 
-	!isBrowserAction ? isLinkExist(linkURL) : null;
+	!isBrowserAction ? isLinkExist(linkURL) : localStorage.setItem("_linkURL", linkURL);;
 	chrome.tabs.sendMessage(tabId, { action: start = !start, linkURL: linkURL });
 	setStatus(start);
 }

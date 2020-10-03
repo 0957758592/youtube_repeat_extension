@@ -51,8 +51,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   );
   console.log('trackId ==> ', trackId);
 
-  message.action ?
-    frame.src = `https://www.youtube.com/embed/${trackId}?&autoplay=1&loop=1&rel=0&showinfo=0&color=white&iv_load_policy=3&playlist=${trackId}` :
-    frame.remove();
+  frame.src = message.action ? `https://www.youtube.com/embed/${trackId}?&autoplay=1&loop=1&rel=0&showinfo=0&color=white&iv_load_policy=3&playlist=${trackId}` : ""
+  
 });
 
