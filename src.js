@@ -30,7 +30,7 @@ let start = false;
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 	if (request.action === 'page_reload') {
 		console.log("page reloaded")
-		setStatus(start = !start);
+		setStatus(start = false, true);
 	}
 });
 
@@ -97,8 +97,8 @@ function isLinkExist(linkURL) {
 	localStorage.setItem("_linkURL", linkURL);
 }
 
-function setStatus(status) {
-	chrome.browserAction.setBadgeText({ text: status ? "on" : "off" }, null);
+function setStatus(status, reset = false) {
+	chrome.browserAction.setBadgeText({ text: status ? "on" : (reset ? "" : "off") }, null);
 	chrome.browserAction.setBadgeBackgroundColor({ color: status ? [0, 180, 0, 100] : [180, 0, 0, 100] }, null);
 	!status ? localStorage.removeItem("_linkURL") : null;
 }
